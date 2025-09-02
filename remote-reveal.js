@@ -46,7 +46,7 @@
         "#drawnCardArea .local-modal{position:absolute;inset:0;background:rgba(0,0,0,.75);" +
         "backdrop-filter:blur(6px);display:none;z-index:50;overflow:hidden;border-radius:12px}" +
         "#drawnCardArea .local-modal__content{position:absolute;top:50%;left:50%;" +
-        "transform:translate(-50%,-50%);padding:20px 20px 80px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box}" +
+        "transform:translate(-50%,-50%);padding:20px 20px 140px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box}" +
         "#drawnCardArea .local-modal__img{display:block;width:auto;max-width:100%;object-fit:contain;" +
         "border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.3)}" +
         "#drawnCardArea .local-modal__caption{margin-top:12px;color:#fff;text-align:center;font-size:1rem}" +
