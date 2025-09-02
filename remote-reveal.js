@@ -46,12 +46,12 @@
         "#drawnCardArea .local-modal{position:absolute;inset:0;background:rgba(0,0,0,.75);" +
         "backdrop-filter:blur(6px);display:none;z-index:50;overflow:hidden;border-radius:12px}" +
         "#drawnCardArea .local-modal__shell{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);" +
-        "display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 20px;box-sizing:border-box;max-width:96vw;max-height:90vh}" +
+        "display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 20px;box-sizing:border-box;max-width:96vw;max-height:90vh;overflow:auto}" +
         "#drawnCardArea .local-modal__content{position:static;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
         "max-width:100%;max-height:inherit}" +
-        "#drawnCardArea .local-modal__img{display:block;width:auto;max-width:100%;object-fit:contain;" +
+        "#drawnCardArea .local-modal__img{display:block;width:auto;max-width:100%;max-height:65vh;object-fit:contain;height:auto;" +
         "border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.3)}" +
-        "#drawnCardArea .local-modal__caption{margin-top:12px;color:#fff;text-align:center;font-size:1rem}" +
+        "#drawnCardArea .local-modal__caption{display:none}" +
         "#drawnCardArea .local-modal__nav{position:absolute;top:50%;transform:translateY(-50%);" +
         "background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:8px;padding:12px 10px;font-size:18px;cursor:pointer}" +
         "#drawnCardArea .local-modal__nav:hover{background:rgba(255,255,255,.2)}" +
@@ -62,8 +62,8 @@
         "#drawnCardArea .local-hit.left{left:0}" +
         "#drawnCardArea .local-hit.right{right:0}" +
         /* footer controls below the card/content */
-        "#drawnCardArea .local-modal__footer{position:static;display:flex;gap:10px;align-items:center;" +
-        "background:transparent;padding:0;border-radius:10px;z-index:3}" +
+        "#drawnCardArea .local-modal__footer{position:sticky;bottom:6px;display:flex;gap:10px;align-items:center;" +
+        "background:rgba(0,0,0,.25);padding:8px 10px;border-radius:10px;z-index:3}" +
         "#drawnCardArea .local-btn{background:#1e9b6e;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}" +
         "#drawnCardArea .local-btn[disabled]{opacity:.6;cursor:not-allowed}";
 
@@ -101,7 +101,6 @@
       '    <button class="local-modal__nav local-modal__prev" disabled>&lt;</button>' +
       '    <button class="local-modal__nav local-modal__next" disabled>&gt;</button>' +
       '    <img class="local-modal__img" />' +
-      '    <div class="local-modal__caption"></div>' +
       (enableDetails ? '    <div class="local-modal__details" hidden></div>' : '') +
       '  </div>' +
       '  <div class="local-modal__footer">' +
@@ -113,7 +112,6 @@
     drawn.appendChild(modal);
 
     modalImg = modal.querySelector(".local-modal__img");
-    modalCaption = modal.querySelector(".local-modal__caption");
     btnPrev = modal.querySelector(".local-modal__prev");
     btnNext = modal.querySelector(".local-modal__next");
     btnClose = modal.querySelector(".local-modal__close");
@@ -144,7 +142,7 @@
     function show() {
       var c = currentCards[idx];
       modalImg.src = c.url || "";
-      modalCaption.textContent = c.title || c.name || ("Card " + (c.id || (idx + 1)));
+      /* caption removed; title shown only in details panel */
       var isFirst = idx === 0;
       var isLast = idx === currentCards.length - 1;
       btnPrev.disabled = isFirst; btnNext.disabled = isLast;
