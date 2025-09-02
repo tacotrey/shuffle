@@ -45,8 +45,10 @@
       css.innerHTML +=
         "#drawnCardArea .local-modal{position:absolute;inset:0;background:rgba(0,0,0,.75);" +
         "backdrop-filter:blur(6px);display:none;z-index:50;overflow:hidden;border-radius:12px}" +
-        "#drawnCardArea .local-modal__content{position:absolute;top:50%;left:50%;" +
-        "transform:translate(-50%,-50%);padding:20px 20px 140px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box}" +
+        "#drawnCardArea .local-modal__shell{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);" +
+        "display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 20px;box-sizing:border-box;max-width:96vw;max-height:90vh}" +
+        "#drawnCardArea .local-modal__content{position:static;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
+        "max-width:100%;max-height:inherit}" +
         "#drawnCardArea .local-modal__img{display:block;width:auto;max-width:100%;object-fit:contain;" +
         "border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.3)}" +
         "#drawnCardArea .local-modal__caption{margin-top:12px;color:#fff;text-align:center;font-size:1rem}" +
@@ -56,11 +58,11 @@
         "#drawnCardArea .local-modal__prev{left:16px}#drawnCardArea .local-modal__next{right:16px}" +
         "#drawnCardArea .local-modal__close{position:absolute;top:10px;right:14px;color:#f1f1f1;font-size:32px;font-weight:700;cursor:pointer;z-index:2}" +
         /* large click zones for easy nav */
-        "#drawnCardArea .local-hit{position:absolute;top:0;bottom:0;width:22%;z-index:1;cursor:pointer}" +
+        "#drawnCardArea .local-hit{position:absolute;top:0;bottom:80px;width:22%;z-index:1;cursor:pointer}" +
         "#drawnCardArea .local-hit.left{left:0}" +
         "#drawnCardArea .local-hit.right{right:0}" +
         /* footer controls below the card/content */
-        "#drawnCardArea .local-modal__footer{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;" +
+        "#drawnCardArea .local-modal__footer{position:static;display:flex;gap:10px;align-items:center;" +
         "background:transparent;padding:0;border-radius:10px;z-index:3}" +
         "#drawnCardArea .local-btn{background:#1e9b6e;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}" +
         "#drawnCardArea .local-btn[disabled]{opacity:.6;cursor:not-allowed}";
@@ -72,7 +74,7 @@
           "padding:14px 16px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.08);word-break:break-word;}" +
           "#drawnCardArea .local-modal__details h3{position:sticky;top:0;background:#ffffff;padding:6px 0 8px;margin:0 0 8px;border-bottom:1px solid #e7eef6}" +
           /* Desktop layout: place details to the right of the image */
-          "@media(min-width:900px){#drawnCardArea .local-modal__content{flex-direction:row;align-items:flex-start;gap:16px}" +
+          "@media(min-width:900px){#drawnCardArea .local-modal__content{flex-direction:row;align-items:flex-start;gap:16px}}" +
           "@media(min-width:900px){#drawnCardArea .local-modal__img{flex:1 1 auto}}" +
           "@media(min-width:900px){#drawnCardArea .local-modal__details{flex:0 0 clamp(300px,32vw,460px);max-height:65vh;overflow:auto;margin-top:0}}" +
           "#drawnCardArea [hidden]{display:none !important}";
@@ -94,17 +96,19 @@
       '<span class="local-modal__close">&times;</span>' +
       '<div class="local-hit left" aria-hidden="true"></div>' +
       '<div class="local-hit right" aria-hidden="true"></div>' +
-      '<div class="local-modal__content">' +
-      '  <button class="local-modal__nav local-modal__prev" disabled>&lt;</button>' +
-      '  <button class="local-modal__nav local-modal__next" disabled>&gt;</button>' +
-      '  <img class="local-modal__img" />' +
-      '  <div class="local-modal__caption"></div>' +
-      (enableDetails ? '  <div class="local-modal__details" hidden></div>' : '') +
-      '</div>' +
-      '<div class="local-modal__footer">' +
-      '  <button class="local-btn local-footer-prev" disabled>Previous</button>' +
-      '  <button class="local-btn local-footer-next" disabled>Next</button>' +
-      (enableDetails ? '  <button class="local-btn local-footer-toggle" aria-pressed="false" title="Details (i)">Show Details</button>' : '') +
+      '<div class="local-modal__shell">' +
+      '  <div class="local-modal__content">' +
+      '    <button class="local-modal__nav local-modal__prev" disabled>&lt;</button>' +
+      '    <button class="local-modal__nav local-modal__next" disabled>&gt;</button>' +
+      '    <img class="local-modal__img" />' +
+      '    <div class="local-modal__caption"></div>' +
+      (enableDetails ? '    <div class="local-modal__details" hidden></div>' : '') +
+      '  </div>' +
+      '  <div class="local-modal__footer">' +
+      '    <button class="local-btn local-footer-prev" disabled>Previous</button>' +
+      '    <button class="local-btn local-footer-next" disabled>Next</button>' +
+      (enableDetails ? '    <button class="local-btn local-footer-toggle" aria-pressed="false" title="Details (i)">Show Details</button>' : '') +
+      '  </div>' +
       '</div>';
     drawn.appendChild(modal);
 
