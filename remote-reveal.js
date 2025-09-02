@@ -124,32 +124,24 @@
       btnNext.disabled = idx === currentCards.length - 1;
 
       if (enableDetails && btnInfo && detailsBox) {
-        // Build details content from available fields; hide if nothing beyond caption
-        var pieces = [];
-        // Prefer title/name as heading only if it adds info beyond caption
-        var heading = c.title || c.name || "";
-        var desc = c.description || c.meaning || c.text || "";
-        var tags = Array.isArray(c.keywords) ? c.keywords : (Array.isArray(c.tags) ? c.tags : null);
+        // Minimal, always-available details: Card name and image URL
+        var displayName = c.title || c.name || ("Card " + (c.id || (idx + 1)));
         var idText = (typeof c.id !== 'undefined') ? ("#" + c.id) : "";
+        var url = c.url || '';
 
-        if (desc) pieces.push('<div>' + String(desc) + '</div>');
-        if (tags && tags.length) pieces.push('<div style="margin-top:6px;opacity:.9">Tags: ' + tags.map(function(t){return '<span>#'+String(t)+'</span>';}).join(' ') + '</div>');
-        if (!desc && !tags) {
-          // Nothing beyond caption
-          detailsBox.hidden = true;
-          btnInfo.disabled = true;
-          btnInfo.setAttribute('aria-pressed','false');
-        } else {
-          btnInfo.disabled = false;
-          // Optional prepend heading subtly if it adds value
-          var html = '';
-          if (heading) html += '<h3 style="margin:0 0 6px">' + String(heading) + (idText? ' <small style="opacity:.7">'+idText+'</small>':'') + '</h3>';
-          html += pieces.join('');
-          detailsBox.innerHTML = html;
-          // Keep details hidden by default until user toggles
-          detailsBox.hidden = true;
-          btnInfo.setAttribute('aria-pressed','false');
+        var html = '';
+        html += '<h3 style="margin:0 0 6px">' + String(displayName) + (idText ? ' <small style="opacity:.7">'+idText+'</small>' : '') + '</h3>';
+        if (url) {
+          html += '<div style="margin-top:6px">Image URL: ' +
+                  '<a href="' + String(url) + '" target="_blank" rel="noopener">open</a>' +
+                  '<div style="font-size:12px; opacity:.75; word-break:break-all; margin-top:2px">' + String(url) + '</div>' +
+                  '</div>';
         }
+
+        detailsBox.innerHTML = html;
+        detailsBox.hidden = true; // start hidden; user toggles with Info button
+        btnInfo.disabled = false;
+        btnInfo.setAttribute('aria-pressed','false');
       }
     }
     function next() { if (idx < currentCards.length - 1) { idx++; show(); } }
