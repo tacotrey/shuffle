@@ -54,13 +54,19 @@
         "background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:8px;padding:12px 10px;font-size:18px;cursor:pointer}" +
         "#drawnCardArea .local-modal__nav:hover{background:rgba(255,255,255,.2)}" +
         "#drawnCardArea .local-modal__prev{left:16px}#drawnCardArea .local-modal__next{right:16px}" +
-        "#drawnCardArea .local-modal__close{position:absolute;top:10px;right:14px;color:#f1f1f1;font-size:32px;font-weight:700;cursor:pointer;z-index:2}";
+        "#drawnCardArea .local-modal__close{position:absolute;top:10px;right:14px;color:#f1f1f1;font-size:32px;font-weight:700;cursor:pointer;z-index:2}" +
+        /* large click zones for easy nav */
+        "#drawnCardArea .local-hit{position:absolute;top:0;bottom:0;width:22%;z-index:1;cursor:pointer}" +
+        "#drawnCardArea .local-hit.left{left:0}" +
+        "#drawnCardArea .local-hit.right{right:0}" +
+        /* footer controls */
+        "#drawnCardArea .local-modal__footer{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;" +
+        "background:rgba(0,0,0,.3);padding:8px 10px;border-radius:10px;z-index:3}" +
+        "#drawnCardArea .local-btn{background:#1e9b6e;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}" +
+        "#drawnCardArea .local-btn[disabled]{opacity:.6;cursor:not-allowed}";
 
       if (enableDetails) {
         css.innerHTML +=
-          "#drawnCardArea .local-modal__info{position:absolute;top:10px;left:14px;background:rgba(255,255,255,.12);" +
-          "color:#fff;border:none;border-radius:8px;padding:8px 10px;font-size:14px;cursor:pointer;z-index:2}" +
-          "#drawnCardArea .local-modal__info[disabled]{opacity:.4;cursor:not-allowed}" +
           "#drawnCardArea .local-modal__details{margin-top:10px;color:#fff;text-align:left;max-width:76ch;" +
           "font-size:.95rem;line-height:1.35;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);" +
           "padding:12px 14px;border-radius:10px;word-break:break-word;}" +
@@ -75,7 +81,8 @@
   }
 
   /* ------------------------ modal build (optional) ------------------------ */
-  var modal, modalImg, modalCaption, btnPrev, btnNext, btnClose, btnInfo, detailsBox;
+  var modal, modalImg, modalCaption, btnPrev, btnNext, btnClose, detailsBox,
+      footerPrev, footerNext, footerToggle, leftHit, rightHit;
   var currentCards = [];
   var idx = 0;
 
@@ -84,13 +91,19 @@
     modal.className = "local-modal";
     modal.innerHTML =
       '<span class="local-modal__close">&times;</span>' +
+      '<div class="local-hit left" aria-hidden="true"></div>' +
+      '<div class="local-hit right" aria-hidden="true"></div>' +
       '<div class="local-modal__content">' +
-      (enableDetails ? '  <button class="local-modal__info" aria-pressed="false" title="Details (i)">Info</button>' : '') +
       '  <button class="local-modal__nav local-modal__prev" disabled>&lt;</button>' +
       '  <button class="local-modal__nav local-modal__next" disabled>&gt;</button>' +
       '  <img class="local-modal__img" />' +
       '  <div class="local-modal__caption"></div>' +
       (enableDetails ? '  <div class="local-modal__details" hidden></div>' : '') +
+      '</div>' +
+      '<div class="local-modal__footer">' +
+      '  <button class="local-btn local-footer-prev" disabled>Previous</button>' +
+      '  <button class="local-btn local-footer-next" disabled>Next</button>' +
+      (enableDetails ? '  <button class="local-btn local-footer-toggle" aria-pressed="false" title="Details (i)">Show Details</button>' : '') +
       '</div>';
     drawn.appendChild(modal);
 
@@ -99,10 +112,12 @@
     btnPrev = modal.querySelector(".local-modal__prev");
     btnNext = modal.querySelector(".local-modal__next");
     btnClose = modal.querySelector(".local-modal__close");
-    if (enableDetails) {
-      btnInfo = modal.querySelector(".local-modal__info");
-      detailsBox = modal.querySelector(".local-modal__details");
-    }
+    if (enableDetails) detailsBox = modal.querySelector(".local-modal__details");
+    leftHit = modal.querySelector('.local-hit.left');
+    rightHit = modal.querySelector('.local-hit.right');
+    footerPrev = modal.querySelector('.local-footer-prev');
+    footerNext = modal.querySelector('.local-footer-next');
+    footerToggle = modal.querySelector('.local-footer-toggle');
 
     function sizeLocalModal() {
       var vv = window.visualViewport || {};
@@ -125,10 +140,13 @@
       var c = currentCards[idx];
       modalImg.src = c.url || "";
       modalCaption.textContent = c.title || c.name || ("Card " + (c.id || (idx + 1)));
-      btnPrev.disabled = idx === 0;
-      btnNext.disabled = idx === currentCards.length - 1;
+      var isFirst = idx === 0;
+      var isLast = idx === currentCards.length - 1;
+      btnPrev.disabled = isFirst; btnNext.disabled = isLast;
+      if (footerPrev) footerPrev.disabled = isFirst;
+      if (footerNext) footerNext.disabled = isLast;
 
-      if (enableDetails && btnInfo && detailsBox) {
+      if (enableDetails && detailsBox) {
         // Minimal, always-available details: Card name and image URL
         var displayName = c.title || c.name || ("Card " + (c.id || (idx + 1)));
         var idText = (typeof c.id !== 'undefined') ? ("#" + c.id) : "";
@@ -137,16 +155,33 @@
         var html = '';
         html += '<h3 style="margin:0 0 6px">' + String(displayName) + (idText ? ' <small style="opacity:.7">'+idText+'</small>' : '') + '</h3>';
         if (url) {
+          try {
+            var u = new URL(String(url));
+            var file = u.pathname.split('/').pop();
+            var short = u.host + '/…/' + file;
+          } catch(e){ var short = String(url); }
           html += '<div style="margin-top:6px">Image URL: ' +
-                  '<a href="' + String(url) + '" target="_blank" rel="noopener">open</a>' +
-                  '<div style="font-size:12px; opacity:.75; word-break:break-all; margin-top:2px">' + String(url) + '</div>' +
+                  '<a href="' + String(url) + '" target="_blank" rel="noopener">' + short + '</a>' +
+                  ' <button class="local-btn local-copy" style="margin-left:6px">Copy</button>' +
+                  '<div style="font-size:12px; opacity:.75; word-break:break-all; margin-top:6px">' + String(url) + '</div>' +
                   '</div>';
         }
 
         detailsBox.innerHTML = html;
-        detailsBox.hidden = true; // start hidden; user toggles with Info button
-        btnInfo.disabled = false;
-        btnInfo.setAttribute('aria-pressed','false');
+        // Restore persisted details state
+        var saved = localStorage.getItem('oflow:detailsOpen') === '1';
+        detailsBox.hidden = !saved;
+        if (footerToggle){
+          footerToggle.textContent = saved ? 'Hide Details' : 'Show Details';
+          footerToggle.setAttribute('aria-pressed', saved ? 'true' : 'false');
+        }
+        // Wire copy button
+        var copyBtn = detailsBox.querySelector('.local-copy');
+        if (copyBtn && url){
+          copyBtn.addEventListener('click', function(){
+            try { navigator.clipboard.writeText(String(url)); copyBtn.textContent = 'Copied!'; setTimeout(()=>copyBtn.textContent='Copy', 1200);} catch{}
+          });
+        }
       }
     }
     function next() { if (idx < currentCards.length - 1) { idx++; show(); } }
@@ -155,12 +190,17 @@
     btnClose.onclick = closeModal;
     btnNext.onclick = next;
     btnPrev.onclick = prev;
-    if (enableDetails && btnInfo && detailsBox) {
-      btnInfo.addEventListener('click', function(){
-        if (btnInfo.disabled) return;
-        var open = detailsBox.hidden === false;
-        detailsBox.hidden = open; // toggle
-        btnInfo.setAttribute('aria-pressed', open ? 'false' : 'true');
+    if (leftHit) leftHit.addEventListener('click', prev);
+    if (rightHit) rightHit.addEventListener('click', next);
+    if (footerPrev) footerPrev.addEventListener('click', prev);
+    if (footerNext) footerNext.addEventListener('click', next);
+    if (enableDetails && footerToggle) {
+      footerToggle.addEventListener('click', function(){
+        var open = detailsBox && detailsBox.hidden === false;
+        if (detailsBox) detailsBox.hidden = open;
+        footerToggle.textContent = open ? 'Show Details' : 'Hide Details';
+        footerToggle.setAttribute('aria-pressed', open ? 'false' : 'true');
+        localStorage.setItem('oflow:detailsOpen', open ? '0' : '1');
       });
     }
     modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
@@ -169,9 +209,13 @@
         if (e.key === "Escape") closeModal();
         else if (e.key === "ArrowRight") next();
         else if (e.key === "ArrowLeft") prev();
-        else if ((e.key === 'i' || e.key === 'I') && enableDetails && btnInfo && detailsBox && !btnInfo.disabled) {
-          e.preventDefault();
-          btnInfo.click();
+        else if ((e.key === 'i' || e.key === 'I') && enableDetails && footerToggle && detailsBox) { e.preventDefault(); footerToggle.click(); }
+        else if (e.key === 'Home') { idx = 0; show(); }
+        else if (e.key === 'End') { idx = Math.max(0, currentCards.length - 1); show(); }
+        else if (e.key === ' ' || e.key === 'Space' || e.key === 'PageDown') {
+          if (detailsBox && !detailsBox.hidden) { e.preventDefault(); detailsBox.scrollBy({top: detailsBox.clientHeight * 0.9, behavior:'smooth'}); }
+        } else if (e.key === 'PageUp') {
+          if (detailsBox && !detailsBox.hidden) { e.preventDefault(); detailsBox.scrollBy({top: -detailsBox.clientHeight * 0.9, behavior:'smooth'}); }
         }
       }
     });
