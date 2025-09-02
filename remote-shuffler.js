@@ -733,7 +733,8 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
       frag.appendChild(row);
 
       const MAX_W = 140, MIN_W = 90;
-      const cols = Math.min(slice.length, 8);
+      // On touch devices, reduce effective columns so fan cards are larger
+      const cols = Math.min(slice.length, IS_COARSE ? 5 : 8);
       const overlapFactor = collapsed ? 1 : 0.6;
       let baseCw = Math.min(MAX_W, Math.max(MIN_W, W / (cols * overlapFactor + 0.25)));
       if (collapsed) baseCw = 130;
@@ -908,7 +909,8 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
       frag.appendChild(row);
 
       const MAX_W = 140, MIN_W = 90;
-      const cols = Math.min(slice.length, 8);
+      // On touch devices, reduce effective columns so fan cards are larger
+      const cols = Math.min(slice.length, IS_COARSE ? 5 : 8);
       const overlapFactor = collapsed ? 1 : 0.6;
       let baseCw = Math.min(MAX_W, Math.max(MIN_W, W / (cols * overlapFactor + 0.25)));
       if (collapsed) baseCw = 130;
@@ -961,9 +963,9 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
       if (!cards.length) return;
 
       const MAX_W = 140, MIN_W = 90;
-      const cols = Math.min(cards.length, 8);
-
       const useCollapsed = mode ? (mode === 'collapsed') : collapsed;
+      // Only reduce columns when in fan view (not collapsed)
+      const cols = Math.min(cards.length, useCollapsed ? 8 : (IS_COARSE ? 5 : 8));
       const overlapFactor = useCollapsed ? 1 : 0.6;
 
       const cw = useCollapsed
