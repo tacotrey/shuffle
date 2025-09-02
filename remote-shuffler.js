@@ -315,7 +315,7 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
 /* no global caps on width; let --cw rule */
 .fan-card, .discard-stack { max-width:none }
 @media (max-width:650px){
-  /* Make only fanned-out deck cards match collapsed size on mobile */
+  /* Keep fanned cards comfortably large on mobile */
   .fan-tableau:not(.is-collapsed) .fan-card { max-width: 130px; }
   .deck-wrapper:not(.collapsed-mode) .discard-stack { max-width: 80px; }
 }
@@ -785,11 +785,12 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
 
     const clone = cardEl.cloneNode(true);
     Object.assign(clone.style, {
-      position:'absolute', left:sRect.left+'px', top:sRect.top+'px',
+      position:'fixed', left:sRect.left+'px', top:sRect.top+'px',
       width:sRect.width+'px', height:sRect.height+'px', margin:0,
       zIndex:9999, pointerEvents:'none', background:'transparent',
       transition:'transform .65s cubic-bezier(.22,1,.36,1), opacity .45s cubic-bezier(.4,.5,.5,1)',
-      boxShadow:'0 8px 40px 8px rgba(39,123,250,.09)'
+      boxShadow:'0 8px 40px 8px rgba(39,123,250,.09)',
+      transform:'none' // ensure we don't inherit the deck/card CSS transform
     });
     document.body.appendChild(clone);
     cardEl.style.visibility = 'hidden';
@@ -965,7 +966,7 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
 
       const MAX_W = 140, MIN_W = 90;
       const useCollapsed = mode ? (mode === 'collapsed') : collapsed;
-      // Only reduce columns when in fan view (not collapsed)
+      // When fanned on touch devices, reduce columns so cards are larger
       const cols = Math.min(cards.length, useCollapsed ? 8 : (IS_COARSE ? 5 : 8));
       const overlapFactor = useCollapsed ? 1 : 0.6;
 
@@ -1000,8 +1001,8 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
         collapsed = true;
         collapseB.textContent = 'Fan Out';
         
-        // Show discard pile when collapsed (only if discard is enabled)
-        if (pileArea && allowDiscard && config.deckView !== 'fan') {
+        // Ensure discard area is display:flex when collapsed (if enabled and not fan-only)
+        if (pileArea && allowDiscard && !ATTR.fanOnly) {
           pileArea.style.display = 'flex';
         }
       });
@@ -1032,9 +1033,9 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
         collapsed = false;
         collapseB.textContent = 'Collapse';
         
-        // Hide discard pile when fanned out (only if not in 'both' mode)
-        if (pileArea && config.deckView === 'fan') {
-          pileArea.style.display = 'none';
+        // Keep display consistent; CSS hides it in fan view automatically
+        if (pileArea && allowDiscard && !ATTR.fanOnly) {
+          pileArea.style.display = 'flex';
         }
       });
 
@@ -1619,7 +1620,7 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
   shuffleB.onclick = () => {
     disableBtns(true);
     const wasCollapsed = collapsed;
-    const wasDiscardVisible = pileArea && pileArea.style.display !== 'none';
+    const shouldDisplayDiscard = allowDiscard && !ATTR.fanOnly;
     const COLLAPSE_MS = FAN_MS_COLLAPSE();
     const EXPAND_MS   = FAN_MS_EXPAND();
 
@@ -1632,8 +1633,8 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
       setTimeout(() => {
         if (!wasCollapsed) {
           setCollapsed(false);
-          // Restore prior discard visibility
-          if (pileArea) pileArea.style.display = wasDiscardVisible ? 'flex' : 'none';
+          // Ensure discard display matches settings; CSS handles actual visibility
+          if (pileArea) pileArea.style.display = shouldDisplayDiscard ? 'flex' : 'none';
           // Re-enable after expand completes
           setTimeout(() => disableBtns(false), EXPAND_MS + 20);
         } else {
