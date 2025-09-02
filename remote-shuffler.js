@@ -315,12 +315,12 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
 /* no global caps on width; let --cw rule */
 .fan-card, .discard-stack { max-width:none }
 @media (max-width:650px){
-  /* Make only fanned-out deck cards larger on mobile; keep discard the same */
-  .fan-tableau:not(.is-collapsed) .fan-card { max-width: 120px; }
+  /* Make only fanned-out deck cards match collapsed size on mobile */
+  .fan-tableau:not(.is-collapsed) .fan-card { max-width: 130px; }
   .deck-wrapper:not(.collapsed-mode) .discard-stack { max-width: 80px; }
 }
 @media (max-width:480px){
-  .fan-tableau:not(.is-collapsed) .fan-card { max-width: 105px; }
+  .fan-tableau:not(.is-collapsed) .fan-card { max-width: 130px; }
   .deck-wrapper:not(.collapsed-mode) .discard-stack { max-width: 60px; }
 }
 
