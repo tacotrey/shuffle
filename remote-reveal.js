@@ -3,6 +3,7 @@
   /* ---------- where to render cards ---------- */
   var scriptEl = document.currentScript;
   var enableModal = (scriptEl && scriptEl.getAttribute("data-modal") !== "0"); // default = on
+  var enableDetails = !!(scriptEl && scriptEl.getAttribute("data-details") === "1"); // default = off
 
   var container =
     document.getElementById("carddeck-inner") ||
@@ -54,12 +55,22 @@
         "#drawnCardArea .local-modal__nav:hover{background:rgba(255,255,255,.2)}" +
         "#drawnCardArea .local-modal__prev{left:16px}#drawnCardArea .local-modal__next{right:16px}" +
         "#drawnCardArea .local-modal__close{position:absolute;top:10px;right:14px;color:#f1f1f1;font-size:32px;font-weight:700;cursor:pointer;z-index:2}";
+
+      if (enableDetails) {
+        css.innerHTML +=
+          "#drawnCardArea .local-modal__info{position:absolute;top:10px;left:14px;background:rgba(255,255,255,.12);" +
+          "color:#fff;border:none;border-radius:8px;padding:8px 10px;font-size:14px;cursor:pointer;z-index:2}" +
+          "#drawnCardArea .local-modal__info[disabled]{opacity:.4;cursor:not-allowed}" +
+          "#drawnCardArea .local-modal__details{margin-top:10px;color:#fff;text-align:left;max-width:76ch;" +
+          "font-size:.95rem;line-height:1.35}" +
+          "#drawnCardArea [hidden]{display:none !important}";
+      }
     }
     document.head.appendChild(css);
   }
 
   /* ------------------------ modal build (optional) ------------------------ */
-  var modal, modalImg, modalCaption, btnPrev, btnNext, btnClose;
+  var modal, modalImg, modalCaption, btnPrev, btnNext, btnClose, btnInfo, detailsBox;
   var currentCards = [];
   var idx = 0;
 
@@ -69,10 +80,12 @@
     modal.innerHTML =
       '<span class="local-modal__close">&times;</span>' +
       '<div class="local-modal__content">' +
+      (enableDetails ? '  <button class="local-modal__info" aria-pressed="false" title="Details (i)">Info</button>' : '') +
       '  <button class="local-modal__nav local-modal__prev" disabled>&lt;</button>' +
       '  <button class="local-modal__nav local-modal__next" disabled>&gt;</button>' +
       '  <img class="local-modal__img" />' +
       '  <div class="local-modal__caption"></div>' +
+      (enableDetails ? '  <div class="local-modal__details" hidden></div>' : '') +
       '</div>';
     drawn.appendChild(modal);
 
@@ -81,6 +94,10 @@
     btnPrev = modal.querySelector(".local-modal__prev");
     btnNext = modal.querySelector(".local-modal__next");
     btnClose = modal.querySelector(".local-modal__close");
+    if (enableDetails) {
+      btnInfo = modal.querySelector(".local-modal__info");
+      detailsBox = modal.querySelector(".local-modal__details");
+    }
 
     function sizeLocalModal() {
       var vv = window.visualViewport || {};
@@ -105,6 +122,35 @@
       modalCaption.textContent = c.title || c.name || ("Card " + (c.id || (idx + 1)));
       btnPrev.disabled = idx === 0;
       btnNext.disabled = idx === currentCards.length - 1;
+
+      if (enableDetails && btnInfo && detailsBox) {
+        // Build details content from available fields; hide if nothing beyond caption
+        var pieces = [];
+        // Prefer title/name as heading only if it adds info beyond caption
+        var heading = c.title || c.name || "";
+        var desc = c.description || c.meaning || c.text || "";
+        var tags = Array.isArray(c.keywords) ? c.keywords : (Array.isArray(c.tags) ? c.tags : null);
+        var idText = (typeof c.id !== 'undefined') ? ("#" + c.id) : "";
+
+        if (desc) pieces.push('<div>' + String(desc) + '</div>');
+        if (tags && tags.length) pieces.push('<div style="margin-top:6px;opacity:.9">Tags: ' + tags.map(function(t){return '<span>#'+String(t)+'</span>';}).join(' ') + '</div>');
+        if (!desc && !tags) {
+          // Nothing beyond caption
+          detailsBox.hidden = true;
+          btnInfo.disabled = true;
+          btnInfo.setAttribute('aria-pressed','false');
+        } else {
+          btnInfo.disabled = false;
+          // Optional prepend heading subtly if it adds value
+          var html = '';
+          if (heading) html += '<h3 style="margin:0 0 6px">' + String(heading) + (idText? ' <small style="opacity:.7">'+idText+'</small>':'') + '</h3>';
+          html += pieces.join('');
+          detailsBox.innerHTML = html;
+          // Keep details hidden by default until user toggles
+          detailsBox.hidden = true;
+          btnInfo.setAttribute('aria-pressed','false');
+        }
+      }
     }
     function next() { if (idx < currentCards.length - 1) { idx++; show(); } }
     function prev() { if (idx > 0) { idx--; show(); } }
@@ -112,12 +158,24 @@
     btnClose.onclick = closeModal;
     btnNext.onclick = next;
     btnPrev.onclick = prev;
+    if (enableDetails && btnInfo && detailsBox) {
+      btnInfo.addEventListener('click', function(){
+        if (btnInfo.disabled) return;
+        var open = detailsBox.hidden === false;
+        detailsBox.hidden = open; // toggle
+        btnInfo.setAttribute('aria-pressed', open ? 'false' : 'true');
+      });
+    }
     modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
     document.addEventListener("keydown", function (e) {
       if (modal.style.display === "block") {
         if (e.key === "Escape") closeModal();
         else if (e.key === "ArrowRight") next();
         else if (e.key === "ArrowLeft") prev();
+        else if ((e.key === 'i' || e.key === 'I') && enableDetails && btnInfo && detailsBox && !btnInfo.disabled) {
+          e.preventDefault();
+          btnInfo.click();
+        }
       }
     });
   }

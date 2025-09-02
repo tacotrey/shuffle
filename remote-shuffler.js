@@ -1680,7 +1680,19 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
     });
 
     deck = meta.cards.map((c,i)=>({
-      id: i+1, key: c.frontImageS3Key, url: null, name: c.title || c.name || ''
+      id: i + 1,
+      key: c.frontImageS3Key,
+      url: null,
+      // Title/name for labels
+      title: c.title || c.name || '',
+      name: c.name || c.title || '',
+      // Richer details for the reveal modal (optional fields)
+      description: c.description || c.meaning || c.text || '',
+      keywords: Array.isArray(c.keywords) ? c.keywords : (Array.isArray(c.tags) ? c.tags : undefined),
+      tags: Array.isArray(c.tags) ? c.tags : undefined,
+      suit: c.suit || undefined,
+      rank: c.rank || c.number || undefined,
+      link: c.link || c.url || undefined
     }));
   }
 
