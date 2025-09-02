@@ -49,7 +49,8 @@
         "gap:12px;padding:20px 20px 96px;box-sizing:border-box;overflow:auto}" +
         "#drawnCardArea .local-modal__content{position:static;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
         "max-width:96vw;max-height:inherit;overflow:hidden}" +
-        "#drawnCardArea .local-modal__img{display:block;width:auto;max-width:100%;max-height:65vh;object-fit:contain;height:auto;min-width:0;" +
+        "#drawnCardArea .local-modal__image{flex:1 1 0;min-width:0;max-width:100%;display:flex;justify-content:center;align-items:center}" +
+        "#drawnCardArea .local-modal__image img{display:block;width:100%;height:auto;max-height:65vh;object-fit:contain;" +
         "border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.3)}" +
         "#drawnCardArea .local-modal__caption{display:none}" +
         "#drawnCardArea .local-modal__nav{position:absolute;top:50%;transform:translateY(-50%);" +
@@ -71,12 +72,12 @@
         css.innerHTML +=
           "#drawnCardArea .local-modal__details{margin-top:10px;color:#1e355d;text-align:left;max-width:76ch;" +
           "font-size:.95rem;line-height:1.45;background:#ffffff;border:1px solid #e7eef6;" +
-          "padding:14px 16px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.08);word-break:break-word;}" +
+          "padding:14px 16px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.08);word-break:break-word;overflow:auto;max-height:60vh;}" +
           "#drawnCardArea .local-modal__details h3{position:sticky;top:0;background:#ffffff;padding:6px 0 8px;margin:0 0 8px;border-bottom:1px solid #e7eef6}" +
           /* Desktop layout: place details to the right of the image */
           "@media(min-width:900px){#drawnCardArea .local-modal__content{flex-direction:row;align-items:flex-start;gap:16px}}" +
-          "@media(min-width:900px){#drawnCardArea .local-modal__img{flex:1 1 auto;max-width:100%;min-width:0}}" +
-          "@media(min-width:900px){#drawnCardArea .local-modal__details{flex:0 0 clamp(300px,32vw,460px);max-height:65vh;overflow:auto;margin-top:0}}" +
+          "@media(min-width:900px){#drawnCardArea .local-modal__image{flex:1 1 0;min-width:0;max-width:100%}}" +
+          "@media(min-width:900px){#drawnCardArea .local-modal__details{flex:0 0 clamp(300px,30vw,420px);max-height:65vh;overflow:auto;margin-top:0}}" +
           "#drawnCardArea [hidden]{display:none !important}";
       }
     }
@@ -100,7 +101,7 @@
       '  <div class="local-modal__content">' +
       '    <button class="local-modal__nav local-modal__prev" disabled>&lt;</button>' +
       '    <button class="local-modal__nav local-modal__next" disabled>&gt;</button>' +
-      '    <img class="local-modal__img" />' +
+      '    <div class="local-modal__image"><img class="local-modal__img" /></div>' +
       (enableDetails ? '    <div class="local-modal__details" hidden></div>' : '') +
       '  </div>' +
       '  <div class="local-modal__footer">' +
@@ -111,7 +112,7 @@
       '</div>';
     drawn.appendChild(modal);
 
-    modalImg = modal.querySelector(".local-modal__img");
+    modalImg = modal.querySelector(".local-modal__image .local-modal__img");
     btnPrev = modal.querySelector(".local-modal__prev");
     btnNext = modal.querySelector(".local-modal__next");
     btnClose = modal.querySelector(".local-modal__close");
