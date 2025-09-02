@@ -45,10 +45,10 @@
       css.innerHTML +=
         "#drawnCardArea .local-modal{position:absolute;inset:0;background:rgba(0,0,0,.75);" +
         "backdrop-filter:blur(6px);display:none;z-index:50;overflow:hidden;border-radius:12px}" +
-        "#drawnCardArea .local-modal__shell{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);" +
-        "display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 20px 84px;box-sizing:border-box;max-width:96vw;max-height:90vh;overflow:auto}" +
+        "#drawnCardArea .local-modal__shell{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
+        "gap:12px;padding:20px 20px 96px;box-sizing:border-box;overflow:auto}" +
         "#drawnCardArea .local-modal__content{position:static;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
-        "width:100%;max-width:100%;max-height:inherit;overflow:hidden}" +
+        "max-width:96vw;max-height:inherit;overflow:hidden}" +
         "#drawnCardArea .local-modal__img{display:block;width:auto;max-width:100%;max-height:65vh;object-fit:contain;height:auto;min-width:0;" +
         "border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.3)}" +
         "#drawnCardArea .local-modal__caption{display:none}" +
@@ -58,7 +58,7 @@
         "#drawnCardArea .local-modal__prev{left:16px}#drawnCardArea .local-modal__next{right:16px}" +
         "#drawnCardArea .local-modal__close{position:absolute;top:10px;right:14px;color:#f1f1f1;font-size:32px;font-weight:700;cursor:pointer;z-index:2}" +
         /* large click zones for easy nav */
-        "#drawnCardArea .local-hit{position:absolute;top:0;bottom:80px;width:22%;z-index:1;cursor:pointer}" +
+        "#drawnCardArea .local-hit{position:absolute;top:0;bottom:120px;width:22%;z-index:1;cursor:pointer}" +
         "#drawnCardArea .local-hit.left{left:0}" +
         "#drawnCardArea .local-hit.right{right:0}" +
         /* footer controls below the card/content */
