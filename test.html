@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Deck Test – Working Implementation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { 
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; 
+      line-height: 1.4; 
+      padding: 24px; 
+      color: #232323; 
+      background: #ecf3fd;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header { 
+      max-width: 900px; 
+      margin: 0 auto 20px; 
+      text-align: center;
+    }
+    .demo { 
+      max-width: 1100px; 
+      margin: 0 auto; 
+      width: 100%;
+    }
+    .note { 
+      color:#666; 
+      font-size:14px; 
+      margin-top:8px; 
+    }
+    hr { 
+      border: none; 
+      height: 1px; 
+      background: #eee; 
+      margin: 24px 0; 
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Deck Test</h1>
+    <p class="note">
+      This page mounts the shuffler and reveal widgets. Use the Shuffle / Reset buttons
+      and click the deck to draw (shift-click to send to discard if enabled).
+    </p>
+  </header>
+
+  <div class="demo">
+    <!-- 1) Load the shuffler via the loader tag with your attributes -->
+    <script
+      id="deck-loader"
+      src="remote-shuffler.js"
+      data-public-id="d1227ffb-b983-486e-8cb2-4df406b38109"
+      data-deck-key="decks/ww2_26bc8e22-f7f3-4b56-b64f-95c8230d32b7.json"
+      data-discard-pile="1"
+      data-deck-view="both"
+      data-card-count="3"
+      data-card-size="medium">
+    </script>
+
+    <!-- 2) Load the reveal script AFTER the loader tag so it can place the reveal area -->
+    <script src="remote-reveal.js"></script>
+
+    <hr />
+
+    <!-- Optional: a second instance to test multiple decks on one page -->
+    <!-- Change the attributes as needed. Uncomment to try. -->
+    <!--
+    <script
+      id="deck-loader-2"
+      src="./remote-shuffler.js"
+      data-public-id="d1227ffb-b983-486e-8cb2-4df406b38109"
+      data-deck-key="decks/way-within_186780be-60e3-45db-a315-23dd287e12e1.json"
+      data-discard-pile="1"
+      data-deck-view="1"
+      data-card-count="5"
+      data-card-size="large">
+    </script>
+    <script src="./remote-reveal.js"></script>
+    -->
+  </div>
+
+  <script>
+    // Global variables that the remote widgets expect
+    window.__DECK_PUBLIC_ID = "d1227ffb-b983-486e-8cb2-4df406b38109";
+    window.drawnCards = [];
+    window.cardImageMap = {};
+    
+    // The remote-shuffler.js now handles all deck functionality
+    // This script just sets up the global variables
+  </script>
+</body>
+</html>

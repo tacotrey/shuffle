@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <title>Minimal Test</title>
+</head>
+<body>
+  <h1>Minimal JavaScript Test</h1>
+  <div id="status"></div>
+  
+  <script>
+    document.getElementById('status').innerHTML = '<p>Basic script loaded</p>';
+    
+    // Test if we can find the script tag
+    const scripts = document.querySelectorAll('script[src*="remote-shuffler.js"]');
+    console.log('Found scripts:', scripts.length);
+    
+    if (scripts.length > 0) {
+      const script = scripts[0];
+      console.log('Script element:', script);
+      console.log('Script parent:', script.parentElement);
+      console.log('Demo container:', script.closest('.demo'));
+      
+      document.getElementById('status').innerHTML += '<p>Script tag found</p>';
+    } else {
+      document.getElementById('status').innerHTML += '<p>Script tag NOT found</p>';
+    }
+  </script>
+  
+  <script
+    id="deck-loader"
+    src="remote-shuffler.js"
+    data-public-id="test"
+    data-deck-key="test.json"
+    data-discard-pile="1"
+    data-deck-view="2"
+    data-card-count="3"
+    data-card-size="medium">
+  </script>
+  
+  <script>
+    document.getElementById('status').innerHTML += '<p>After remote-shuffler.js</p>';
+  </script>
+</body>
+</html>

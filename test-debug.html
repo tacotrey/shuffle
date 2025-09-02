@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Debug Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <h1>Debug Test</h1>
+  
+  <div id="debug-info">
+    <p>Script loading status:</p>
+    <ul id="script-status"></ul>
+  </div>
+
+  <!-- Test the remote-shuffler.js -->
+  <script
+    id="deck-loader"
+    src="remote-shuffler.js"
+    data-public-id="d1227ffb-b983-486e-8cb2-4df406b38109"
+    data-deck-key="decks/ww2_26bc8e22-f7f3-4b56-b64f-95c8230d32b7.json"
+    data-discard-pile="1"
+    data-deck-view="2"
+    data-card-count="3"
+    data-card-size="medium">
+  </script>
+
+  <!-- Test the remote-reveal.js -->
+  <script src="remote-reveal.js"></script>
+
+  <script>
+    // Debug script loading
+    window.addEventListener('load', function() {
+      const statusList = document.getElementById('script-status');
+      
+      // Check if scripts loaded
+      const scripts = document.querySelectorAll('script');
+      scripts.forEach((script, index) => {
+        const li = document.createElement('li');
+        li.textContent = `Script ${index + 1}: ${script.src || 'inline'} - ${script.id || 'no-id'}`;
+        statusList.appendChild(li);
+      });
+      
+      // Check for any global variables or functions that should have been created
+      if (typeof window.__DECK_PUBLIC_ID !== 'undefined') {
+        const li = document.createElement('li');
+        li.textContent = `Global variable __DECK_PUBLIC_ID found: ${window.__DECK_PUBLIC_ID}`;
+        statusList.appendChild(li);
+      } else {
+        const li = document.createElement('li');
+        li.textContent = 'Global variable __DECK_PUBLIC_ID NOT found';
+        li.style.color = 'red';
+        statusList.appendChild(li);
+      }
+      
+      // Check console for any errors
+      console.log('Debug: Page loaded, checking for script execution...');
+    });
+    
+    // Catch any script loading errors
+    window.addEventListener('error', function(e) {
+      console.error('Script error:', e);
+      const statusList = document.getElementById('script-status');
+      const li = document.createElement('li');
+      li.textContent = `ERROR: ${e.message} at ${e.filename}:${e.lineno}`;
+      li.style.color = 'red';
+      statusList.appendChild(li);
+    });
+  </script>
+</body>
+</html>

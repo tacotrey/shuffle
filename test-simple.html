@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <title>Simple Test</title>
+</head>
+<body>
+  <h1>Simple JavaScript Test</h1>
+  <div id="output"></div>
+  
+  <script>
+    console.log('Basic script loaded');
+    document.getElementById('output').innerHTML = '<p>Basic script loaded successfully</p>';
+  </script>
+  
+  <script src="remote-shuffler.js"></script>
+  
+  <script>
+    console.log('After remote-shuffler.js');
+    document.getElementById('output').innerHTML += '<p>After remote-shuffler.js</p>';
+  </script>
+  
+  <script src="remote-reveal.js"></script>
+  
+  <script>
+    console.log('After remote-reveal.js');
+    document.getElementById('output').innerHTML += '<p>After remote-reveal.js</p>';
+  </script>
+</body>
+</html>
