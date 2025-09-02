@@ -50,7 +50,11 @@
   </header>
 
   <div class="demo">
-    <!-- 1) Load the shuffler via the loader tag with your attributes -->
+    <!-- 1) Load the reveal script first. Use data-modal to enable(1)/disable(0) the modal viewer. -->
+    <!--    Set data-modal="0" to disable the modal (thumbnails only). -->
+    <script src="remote-reveal.js" data-modal="1"></script>
+
+    <!-- 2) Load the shuffler via the loader tag with your attributes -->
     <script
       id="deck-loader"
       src="remote-shuffler.js"
@@ -62,8 +66,9 @@
       data-card-size="medium">
     </script>
 
-    <!-- 2) Load the reveal script AFTER the loader tag so it can place the reveal area -->
-    <script src="remote-reveal.js"></script>
+    <!-- Example: disable the modal
+    <script src="remote-reveal.js" data-modal="0"></script>
+    -->
 
     <hr />
 
@@ -80,7 +85,7 @@
       data-card-count="5"
       data-card-size="large">
     </script>
-    <script src="./remote-reveal.js"></script>
+    <script src="./remote-reveal.js" data-modal="1"></script>
     -->
   </div>
 
