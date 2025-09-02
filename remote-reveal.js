@@ -47,7 +47,7 @@
         "backdrop-filter:blur(6px);display:none;z-index:50;overflow:hidden;border-radius:12px}" +
         "#drawnCardArea .local-modal__shell{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
         "gap:12px;padding:20px 20px 96px;box-sizing:border-box;overflow:auto}" +
-        "#drawnCardArea .local-modal__content{position:static;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
+        "#drawnCardArea .local-modal__content{position:static;padding:0 0 120px;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
         "max-width:96vw;max-height:inherit;overflow:hidden}" +
         "#drawnCardArea .local-modal__image{flex:1 1 0;min-width:0;max-width:100%;display:flex;justify-content:center;align-items:center}" +
         "#drawnCardArea .local-modal__image img{display:block;width:100%;height:auto;max-height:65vh;object-fit:contain;" +
@@ -63,7 +63,7 @@
         "#drawnCardArea .local-hit.left{left:0}" +
         "#drawnCardArea .local-hit.right{right:0}" +
         /* footer controls below the card/content */
-        "#drawnCardArea .local-modal__footer{position:sticky;bottom:6px;display:flex;gap:10px;align-items:center;" +
+        "#drawnCardArea .local-modal__footer{position:sticky;bottom:12px;display:flex;gap:10px;align-items:center;" +
         "background:rgba(0,0,0,.25);padding:8px 10px;border-radius:10px;z-index:3}" +
         "#drawnCardArea .local-btn{background:#1e9b6e;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}" +
         "#drawnCardArea .local-btn[disabled]{opacity:.6;cursor:not-allowed}";
