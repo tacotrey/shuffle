@@ -46,10 +46,10 @@
         "#drawnCardArea .local-modal{position:absolute;inset:0;background:rgba(0,0,0,.75);" +
         "backdrop-filter:blur(6px);display:none;z-index:50;overflow:hidden;border-radius:12px}" +
         "#drawnCardArea .local-modal__shell{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);" +
-        "display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 20px;box-sizing:border-box;max-width:96vw;max-height:90vh;overflow:auto}" +
+        "display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 20px 84px;box-sizing:border-box;max-width:96vw;max-height:90vh;overflow:auto}" +
         "#drawnCardArea .local-modal__content{position:static;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
-        "max-width:100%;max-height:inherit}" +
-        "#drawnCardArea .local-modal__img{display:block;width:auto;max-width:100%;max-height:65vh;object-fit:contain;height:auto;" +
+        "width:100%;max-width:100%;max-height:inherit;overflow:hidden}" +
+        "#drawnCardArea .local-modal__img{display:block;width:auto;max-width:100%;max-height:65vh;object-fit:contain;height:auto;min-width:0;" +
         "border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.3)}" +
         "#drawnCardArea .local-modal__caption{display:none}" +
         "#drawnCardArea .local-modal__nav{position:absolute;top:50%;transform:translateY(-50%);" +
@@ -75,7 +75,7 @@
           "#drawnCardArea .local-modal__details h3{position:sticky;top:0;background:#ffffff;padding:6px 0 8px;margin:0 0 8px;border-bottom:1px solid #e7eef6}" +
           /* Desktop layout: place details to the right of the image */
           "@media(min-width:900px){#drawnCardArea .local-modal__content{flex-direction:row;align-items:flex-start;gap:16px}}" +
-          "@media(min-width:900px){#drawnCardArea .local-modal__img{flex:1 1 auto}}" +
+          "@media(min-width:900px){#drawnCardArea .local-modal__img{flex:1 1 auto;max-width:100%;min-width:0}}" +
           "@media(min-width:900px){#drawnCardArea .local-modal__details{flex:0 0 clamp(300px,32vw,460px);max-height:65vh;overflow:auto;margin-top:0}}" +
           "#drawnCardArea [hidden]{display:none !important}";
       }
