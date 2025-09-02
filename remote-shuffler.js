@@ -316,11 +316,11 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
 .fan-card, .discard-stack { max-width:none }
 @media (max-width:650px){
   .fan-tableau:not(.is-collapsed) .fan-card,
-  .deck-wrapper:not(.collapsed-mode) .discard-stack { max-width: 110px; }
+  .deck-wrapper:not(.collapsed-mode) .discard-stack { max-width: 80px; }
 }
 @media (max-width:480px){
   .fan-tableau:not(.is-collapsed) .fan-card,
-  .deck-wrapper:not(.collapsed-mode) .discard-stack { max-width: 95px; }
+  .deck-wrapper:not(.collapsed-mode) .discard-stack { max-width: 60px; }
 }
 
 /* motion prefs */
@@ -478,12 +478,8 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
     return container;
   };
 
-  // Collapsed mode helpers (responsive width that fits mobile screens)
-  const collapsedCW = () => {
-    const vw = Math.max(320, Math.min((window.innerWidth || 360), 900)); // clamp viewport width
-    const base = Math.min(420, Math.max(160, vw * 0.88)); // ~88vw, clamped to sensible bounds
-    return Math.round(base * cardScale);
-  };
+  // Collapsed mode helpers
+  const collapsedCW = () => Math.round(130 * cardScale);
   function applyCollapsedSize(){
     const cw = collapsedCW();
     if (deckWrap) deckWrap.style.setProperty('--cw', `${cw}px`);
@@ -736,8 +732,8 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
       row.setAttribute('role', 'list');
       frag.appendChild(row);
 
-      const MAX_W = 180, MIN_W = 90;
-      const cols = Math.min(slice.length, IS_COARSE ? 5 : 8);
+      const MAX_W = 140, MIN_W = 90;
+      const cols = Math.min(slice.length, 8);
       const overlapFactor = collapsed ? 1 : 0.6;
       let baseCw = Math.min(MAX_W, Math.max(MIN_W, W / (cols * overlapFactor + 0.25)));
       if (collapsed) baseCw = 130;
@@ -911,8 +907,8 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
       row.setAttribute('role', 'list');
       frag.appendChild(row);
 
-      const MAX_W = 180, MIN_W = 90;
-      const cols = Math.min(slice.length, IS_COARSE ? 5 : 8);
+      const MAX_W = 140, MIN_W = 90;
+      const cols = Math.min(slice.length, 8);
       const overlapFactor = collapsed ? 1 : 0.6;
       let baseCw = Math.min(MAX_W, Math.max(MIN_W, W / (cols * overlapFactor + 0.25)));
       if (collapsed) baseCw = 130;
@@ -951,11 +947,6 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
   }
 
   function syncDiscardSize(){
-    // In collapsed mode, let CSS control width via --cw and width:100%
-    if (deckWrap && deckWrap.classList.contains('collapsed-mode')){
-      pileStack.style.removeProperty('width');
-      return;
-    }
     const base = 130;
     pileStack.style.width = (base * cardScale) + 'px';
   }
@@ -969,8 +960,8 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
       const cards = [...row.children];
       if (!cards.length) return;
 
-      const MAX_W = 180, MIN_W = 90;
-      const cols = Math.min(cards.length, IS_COARSE ? 5 : 8);
+      const MAX_W = 140, MIN_W = 90;
+      const cols = Math.min(cards.length, 8);
 
       const useCollapsed = mode ? (mode === 'collapsed') : collapsed;
       const overlapFactor = useCollapsed ? 1 : 0.6;
@@ -1786,8 +1777,7 @@ button:disabled{background:#b8b9c8; cursor:not-allowed; opacity:.6}
   });
 
   window.addEventListener('resize', rafThrottle(() => {
-    if (collapsed && !toggling) { applyCollapsedSize(); recalc('collapsed'); tidyRows(); }
-    else if (!collapsed && !toggling) { buildFanFast(); }
+    if (!collapsed && !toggling) buildFanFast();
   }));
 
 
